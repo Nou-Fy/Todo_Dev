@@ -1,8 +1,11 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
   reactCompiler: true,
+  // Prevent build worker crashes in restricted environments.
+  experimental: {
+    webpackBuildWorker: false,
+  },
 };
 
 export default nextConfig;
