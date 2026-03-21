@@ -1,7 +1,7 @@
 import "server-only";
 
 import { auth, currentUser } from "@clerk/nextjs/server";
-import { prisma } from "@/lib/prisma";
+import { prisma } from "@/models/server/prismaClient";
 
 /**
  * Returns the current DB user for the signed-in Clerk user.
