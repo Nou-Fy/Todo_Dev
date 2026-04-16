@@ -11,6 +11,30 @@ import {
   updateTodoForUser,
 } from "@/models/prisma/todoRepository";
 
+type PrismaErrorWithCode = {
+  code?: string;
+};
+
+function isDatabaseUnavailable(error: unknown): boolean {
+  return (
+    typeof error === "object" &&
+    error !== null &&
+    "code" in error &&
+    (error as PrismaErrorWithCode).code === "P1001"
+  );
+}
+
+function internalErrorMessage(action: string, error: unknown) {
+  if (isDatabaseUnavailable(error)) {
+    return NextResponse.json(
+      { error: "Base de donnees indisponible. Verifie que PostgreSQL est demarre." },
+      { status: 503 },
+    );
+  }
+
+  return NextResponse.json({ error: action }, { status: 500 });
+}
+
 function unauthorized() {
   return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 }
@@ -26,7 +50,7 @@ export async function handleGetTodos() {
     return NextResponse.json(todos);
   } catch (error) {
     console.error("Error fetching todos:", error);
-    return NextResponse.json({ error: "Failed to fetch todos" }, { status: 500 });
+    return internalErrorMessage("Failed to fetch todos", error);
   }
 }
 
@@ -60,7 +84,7 @@ export async function handlePostTodo(request: Request) {
     return NextResponse.json(todo, { status: 201 });
   } catch (error) {
     console.error("Error creating todo:", error);
-    return NextResponse.json({ error: "Failed to create todo" }, { status: 500 });
+    return internalErrorMessage("Failed to create todo", error);
   }
 }
 
@@ -84,7 +108,7 @@ export async function handleDeleteTodo(request: Request) {
     return NextResponse.json(deleted);
   } catch (error) {
     console.error("Error deleting todo:", error);
-    return NextResponse.json({ error: "Erreur suppression" }, { status: 500 });
+    return internalErrorMessage("Erreur suppression", error);
   }
 }
 
@@ -149,6 +173,6 @@ export async function handlePatchTodo(request: Request) {
     return NextResponse.json(updated);
   } catch (error) {
     console.error("Error updating todo:", error);
-    return NextResponse.json({ error: "Failed to update todo" }, { status: 500 });
+    return internalErrorMessage("Failed to update todo", error);
   }
 }

@@ -147,11 +147,26 @@
       ),
       linear-gradient(to right, var(--dev-grid) 1px, transparent 1px),
       linear-gradient(to bottom, var(--dev-grid) 1px, transparent 1px);
-    background-size: auto, auto, 48px 48px, 48px 48px;
-    background-position: 0 0, 0 0, -1px -1px, -1px -1px;
+    background-size:
+      auto,
+      auto,
+      48px 48px,
+      48px 48px;
+    background-position:
+      0 0,
+      0 0,
+      -1px -1px,
+      -1px -1px;
     background-attachment: fixed;
   }
   html {
     @apply font-sans;
   }
+}
+
+.hero-background {
+  background-image: url("/background.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 }

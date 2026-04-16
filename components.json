@@ -12,13 +12,6 @@
   },
   "iconLibrary": "lucide",
   "rtl": false,
-  "aliases": {
-    "components": "@/views/ui",
-    "utils": "@/shared/utils",
-    "ui": "@/views/ui",
-    "lib": "@/models/server",
-    "hooks": "@/controllers"
-  },
   "menuColor": "default",
   "menuAccent": "subtle",
   "registries": {}
