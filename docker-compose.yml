@@ -1,0 +1,38 @@
+services:
+  app:
+    build: .
+    container_name: todo_dev
+    ports:
+      - "3000:3000"
+    environment:
+      NODE_ENV: production
+      DATABASE_URL: postgresql://postgres:password@db:5432/todo_db?schema=public
+      NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: pk_test_Z2FtZS1yb2RlbnQtNC5jbGVyay5hY2NvdW50cy5kZXYk
+      CLERK_SECRET_KEY: sk_test_36KfJqN6omsUcSF8ZwcyTQUyJqHrmC8NyWauo5bIRE
+      HOSTNAME: "0.0.0.0"
+    depends_on:
+      db:
+        condition: service_healthy
+    command: sh -c "npx prisma db push && npm start"
+    restart: unless-stopped
+
+  db:
+    image: postgres:16-alpine
+    container_name: todo_dev_db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: todo_db
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d todo_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
